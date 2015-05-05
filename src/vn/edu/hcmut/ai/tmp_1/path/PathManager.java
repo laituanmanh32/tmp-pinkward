@@ -10,8 +10,13 @@ import robocode.ScannedRobotEvent;
 
 public class PathManager {
 	private AdvancedRobot robot;
-	private static Hashtable pathes = new Hashtable();
+	private static Hashtable<String,Path> pathes = new Hashtable<String,Path>();
 	private int round;
+
+	public PathManager( AdvancedRobot robot ){
+		this.robot = robot;
+		round = robot.getRoundNum();
+    }
 
 	//--------------------------------------------------------------------------------------
 		public void onScannedRobot( ScannedRobotEvent event ){
@@ -45,7 +50,7 @@ public class PathManager {
 		}
 
 	    public void onFire( double power ){
-			for( Enumeration e = pathes.elements(); e.hasMoreElements(); )
+			for( Enumeration<Path> e = pathes.elements(); e.hasMoreElements(); )
 				 ((Path)e.nextElement()).onFire( power );
 		}
 

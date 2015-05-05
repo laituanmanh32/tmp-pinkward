@@ -7,11 +7,11 @@ import vn.edu.hcmut.ai.tmp_1.utils.Util;
 public class Path {
 	private final int MAX_SIZE = 5000;
 	private String name;
-	private ArrayList list;
+	private ArrayList<PathNode> list;
 
 	public Path(String name) {
 		this.name = name;
-		list = new ArrayList();
+		list = new ArrayList<PathNode>();
 	}
 
 	// ---------------------------------------------------------------
