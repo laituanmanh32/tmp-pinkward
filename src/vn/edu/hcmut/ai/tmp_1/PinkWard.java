@@ -26,6 +26,7 @@ import robocode.ScannedRobotEvent;
 import robocode.SkippedTurnEvent;
 import robocode.TurnCompleteCondition;
 import robocode.WinEvent;
+import vn.edu.hcmut.ai.tmp_1.minixHT.MinixHT;
 
 public class PinkWard extends AdvancedRobot {
 	/**
@@ -68,6 +69,8 @@ public class PinkWard extends AdvancedRobot {
 		setAdjustGunForRobotTurn(true);
 		setAdjustRadarForGunTurn(true);
 		setAdjustRadarForRobotTurn(true);
+
+
 
 		enemyAmount = getOthers();
 		// choose the operator base on the operator's score
@@ -123,6 +126,7 @@ public class PinkWard extends AdvancedRobot {
 		// operator = new Lolita(this);
 		// else
 		// out.println("unknow operator");
+		operator = new MinixHT(this);
 
 		out.println("operator is : " + operator.getName());
 		for (int i = 0; i < totalScore.length; i++) {
