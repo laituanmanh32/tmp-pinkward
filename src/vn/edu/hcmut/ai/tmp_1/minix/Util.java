@@ -1,9 +1,9 @@
 package vn.edu.hcmut.ai.tmp_1.minix;
 
-/* 
+/*
  * base class for minix operator.
  * define some usefull math function.
- */	
+ */
 public class Util
 {
 
@@ -13,7 +13,7 @@ public class Util
 
      public static double computeLineHeading( double x1,double y1,double x2,double y2){
 	    //  compute line heading through ( x1,y1 ) and ( x2,y2 ),
-	    //  from ( x1,y1 ) to the ( x2,y2 ).    	
+	    //  from ( x1,y1 ) to the ( x2,y2 ).
 		double lineHeading ;
         // special check
         if( x1 == x2 && y1 == y2 ) return 0;
@@ -25,7 +25,7 @@ public class Util
 		        else return 90;
 	    }
 	    // normal condition
-		if( x1 < x2 && y1 < y2 ){ 
+		if( x1 < x2 && y1 < y2 ){
 			 lineHeading = Math.toDegrees(Math.atan((x2 - x1)/(y2 - y1)));
 	    }else if( x1 < x2 && y1 > y2 ){
 			 lineHeading = 90 + Math.toDegrees(Math.atan((y1 - y2)/(x2 - x1)));
@@ -33,10 +33,10 @@ public class Util
 			 lineHeading = 180 + Math.toDegrees(Math.atan((x1 - x2)/(y1 - y2)));
 	    }else {
 			 lineHeading = 270 + Math.toDegrees(Math.atan((y2 - y1)/(x1 - x2)));
-		} 		
+		}
         return lineHeading;
-        
-     } // computeLineHeading	
+
+     } // computeLineHeading
 
      public static double computeLineDistance( double x1,double y1,double x2,double y2){
          return Math.sqrt(
@@ -53,16 +53,16 @@ public class Util
         // compute relative bearing, base on heading2
         double bearing = heading1 - heading2 ;
 		if( bearing <= 180 && bearing >= 0 ){ // -180 < bearing <= 180
-		    bearing = bearing;
+		    // nothing change
 		}else if( bearing > 180 ){
 			bearing = bearing - 360;
         }else if( bearing < 0 && bearing > -180 ){
-	        bearing = bearing;
+	        // nothing change
 	    }else if( bearing <= -180 )
 	        bearing = 360 + bearing;
         return bearing;
 	 }
-	 
+
 	 public static double modifyHeading( double heading ){
          if( heading >= 360 ) return modifyHeading( heading - 360 );
 		 else if( heading < 0 ) return modifyHeading( heading + 360 );

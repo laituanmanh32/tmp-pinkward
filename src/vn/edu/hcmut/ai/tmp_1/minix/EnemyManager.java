@@ -1,4 +1,4 @@
-package vn.edu.hcmut.ai.tmp_1.minixHT;
+package vn.edu.hcmut.ai.tmp_1.minix;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -8,66 +8,66 @@ import robocode.HitByBulletEvent;
 import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 
-public class EnemyManagerHT
+public class EnemyManager
 {
-	private MinixHT operator;
+	private Minix operator;
 	private AdvancedRobot robot;
-    private Hashtable alive;
-	private Hashtable dired;
+    private Hashtable<String, Enemy> alive;
+	private Hashtable<String, Enemy> dired;
 
-	public EnemyManagerHT( MinixHT operator, AdvancedRobot robot ){
+	public EnemyManager( Minix operator, AdvancedRobot robot ){
         this.operator = operator;
 		this.robot = robot;
-		alive = new Hashtable();
-		dired = new Hashtable();
+		alive = new Hashtable<String, Enemy>();
+		dired = new Hashtable<String, Enemy>();
 	}
 
 	//----------------------------------------------------------------
 	public void onScannedRobot( ScannedRobotEvent event ){
-        EnemyHT enemy = getEnemy( event.getName() );
+        Enemy enemy = getEnemy( event.getName() );
 		if( enemy == null ){
-			enemy = new EnemyHT( operator, robot, event.getName() );
+			enemy = new Enemy( operator, robot, event.getName() );
 			alive.put( event.getName(), enemy );
 		}
         enemy.onScannedRobot( event );
 	}
 
 	public void onHitByBullet( HitByBulletEvent event ){
-        EnemyHT enemy = getEnemy( event.getName() );
+        Enemy enemy = getEnemy( event.getName() );
         if( enemy != null )
 			enemy.onEnemyBulletHit( event.getPower() );
 	}
 
 	public void onFire( double power ){
 		for( Enumeration e = alive.elements(); e.hasMoreElements(); )
-			 ((EnemyHT)e.nextElement()).onFire( power );
+			 ((Enemy)e.nextElement()).onFire( power );
 	}
 
 	public void onBulletHit( BulletHitEvent event ){
-		EnemyHT enemy = getEnemy( event.getName() );
+		Enemy enemy = getEnemy( event.getName() );
 		if( enemy != null )
 			enemy.onBulletHit( event.getBullet().getPower() );
 	}
 
 	public void onRobotDeath( RobotDeathEvent event ){
-        EnemyHT enemy = ( EnemyHT )alive.remove( event.getName() );
+        Enemy enemy = ( Enemy )alive.remove( event.getName() );
 		if( enemy == null ) return;
 		dired.put( enemy.getName(), enemy );
 		enemy.dired();
 	}
 
 	//-------------------------------------------------------------------
-    public EnemyHT getEnemy( String name ){
-		EnemyHT enemy = (EnemyHT)alive.get( name );
+    public Enemy getEnemy( String name ){
+		Enemy enemy = (Enemy)alive.get( name );
 		return enemy;
 	}
 
-	public EnemyHT[] getEnemies(){
+	public Enemy[] getEnemies(){
 		if( alive.size() <1 ) return null;
-		EnemyHT[] enemies = new EnemyHT[alive.size()];
+		Enemy[] enemies = new Enemy[alive.size()];
 		int index = 0;
 		for( Enumeration e = alive.elements(); e.hasMoreElements(); ){
-			 EnemyHT temp = (EnemyHT)e.nextElement();
+			 Enemy temp = (Enemy)e.nextElement();
 			 enemies[index++] = temp;
 		}
 	    return enemies;
@@ -76,7 +76,7 @@ public class EnemyManagerHT
     //------------------------------------------------------------------------------
     public void onFinish(){
         for( Enumeration e = alive.elements(); e.hasMoreElements(); ){
-			 EnemyHT enemy = (EnemyHT)e.nextElement();
+			 Enemy enemy = (Enemy)e.nextElement();
 			 robot.out.println( enemy.getName()+"." );
 			 robot.out.println("power(hit/fire): "+enemy.hitPower+"/"+enemy.firePower );
 			 robot.out.println("num(hit/fire): " +enemy.hitNum+"/"+enemy.fireNum );
@@ -84,7 +84,7 @@ public class EnemyManagerHT
 				 robot.out.println("fire count: "+enemy.hitPower/enemy.firePower );
 		}
 		for( Enumeration e = dired.elements(); e.hasMoreElements(); ){
-			 EnemyHT enemy = (EnemyHT)e.nextElement();
+			 Enemy enemy = (Enemy)e.nextElement();
 			 robot.out.println( enemy.getName()+"." );
 			 robot.out.println("power(hit/fire): "+enemy.hitPower+"/"+enemy.firePower );
 			 robot.out.println("num(hit/fire): " +enemy.hitNum+"/"+enemy.fireNum );

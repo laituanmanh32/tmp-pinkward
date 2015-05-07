@@ -26,19 +26,18 @@ import robocode.ScannedRobotEvent;
 import robocode.SkippedTurnEvent;
 import robocode.TurnCompleteCondition;
 import robocode.WinEvent;
-import vn.edu.hcmut.ai.tmp_1.minixHT.MinixHT;
+import vn.edu.hcmut.ai.tmp_1.minix.Minix;
 
 public class PinkWard extends AdvancedRobot {
+
 	/**
-	 * the operator be choosed to battle in current round.
+	 * The core, the heart of robot. All event will be handled by
+	 * operator.
 	 */
 	private Operator operator;
-	/**
-	 * there are two robot operator.
-	 */
-	static final int OPERATOR_NUM = 2;
+
+	static final int OPERATOR_NUM = 1;
 	static final int MINIX_HT = 0;
-	static final int LOLITA = 1;
 	/**
 	 * store score info to all knowed enemies.
 	 */
@@ -107,37 +106,14 @@ public class PinkWard extends AdvancedRobot {
 	} // init
 
 	private void chooseOperator() {
-		currentOperatorIndex = -1;
-		double bestScore = -1000000, averageScore;
-		for (int i = 0; i < OPERATOR_NUM; i++) {
-			if (totalRound[i] <= 0)
-				averageScore = totalScore[i];
-			else
-				averageScore = totalScore[i] / totalRound[i];
-			if (averageScore > bestScore) {
-				currentOperatorIndex = i;
-				bestScore = averageScore;
-			}
-		}
 
-		// if (currentOperatorIndex == MINIX_HT)
-		// operator = new MinixHT(this);
-		// else if (currentOperatorIndex == LOLITA)
-		// operator = new Lolita(this);
-		// else
-		// out.println("unknow operator");
-		operator = new MinixHT(this);
+		operator = new Minix(this);
 
 		out.println("operator is : " + operator.getName());
 		for (int i = 0; i < totalScore.length; i++) {
 			if (i == MINIX_HT)
 				out.println("MinixHT score  : " + totalScore[i] + " with "
 						+ totalRound[i] + " rounds.");
-			else if (i == LOLITA)
-				out.println("Lolita score  : " + totalScore[i] + " with "
-						+ totalRound[i] + " rounds.");
-			else
-				out.println("unknow operator score : " + totalScore[i]);
 		}
 	}
 
@@ -154,7 +130,10 @@ public class PinkWard extends AdvancedRobot {
 		storeScore();
 	}
 
-	// -----------------------------------------------------------------------
+	/**
+	 * This method try to get the score of previous session/round
+	 * game.
+	 */
 	private void loadScore() {
 		try {
 			ObjectInputStream input = new ObjectInputStream(
@@ -172,6 +151,10 @@ public class PinkWard extends AdvancedRobot {
 		}
 	}
 
+	/**
+	 * This method write out the data(score) of this round to the find
+	 * to use in the feature.
+	 */
 	private void storeScore() {
 		try {
 			ObjectOutputStream output = new ObjectOutputStream(
@@ -185,9 +168,10 @@ public class PinkWard extends AdvancedRobot {
 		}
 	}
 
-	// -----------------------------------------------------------------
-	// all robot event will be send to the operator
-	// system event
+	/**
+	 * The involved event on scanned robot.
+	 * All event will be sent to operator.
+	 */
 	public void onScannedRobot(ScannedRobotEvent event) {
 		if (operator == null) { // need choose operator
 			totalScore = (double[]) scoreInfo.get(event.getName() + "_score");
@@ -215,6 +199,10 @@ public class PinkWard extends AdvancedRobot {
 		currentScore -= 3d;
 	}
 
+	/**
+	 * Involved when 2 robot is hit each other.
+	 * Just recalculate the score.
+	 */
 	public void onHitRobot(HitRobotEvent e) {
 		operator.onHitRobot(e);
 
@@ -278,7 +266,9 @@ public class PinkWard extends AdvancedRobot {
 		operator.onSkippedTurn(e);
 	}
 
-	// custom event handle
+	/**
+	 * Handle all custom event.
+	 */
 	public void onCustomEvent(CustomEvent event) {
 		if (event.getCondition().getName()
 				.equals("robocode.MoveCompleteCondition")) {

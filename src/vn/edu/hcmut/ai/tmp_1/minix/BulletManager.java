@@ -1,31 +1,27 @@
-package vn.edu.hcmut.ai.tmp_1.minixHT.gunHT;
+package vn.edu.hcmut.ai.tmp_1.minix;
 import java.util.ArrayList;
 
 import robocode.AdvancedRobot;
-import vn.edu.hcmut.ai.tmp_1.minix.Util;
-import vn.edu.hcmut.ai.tmp_1.minixHT.BulletHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.EnemyHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.PathNodeHT;
 
-class BulletManagerHT
+class BulletManager
 {
-	private final boolean FIRE_HEADING_DEBUG = false;
+
 	private final boolean COMPUTE_ERROR_DEBUG = false;
 	static int computeErrorNum;
 	static int computeNum;
 	private static double lastComputeTime;
 
 	private AdvancedRobot robot;
-    private EnemyHT enemy;
+    private Enemy enemy;
 
     private final int OFFSET = 46;
 	private double battleFieldHeight;
     private double battleFieldWidth;
-	private ArrayList bullets;  // store the image bullet
+	private ArrayList<Bullet> bullets;  // store the image bullet
 	private int bulletNum;
     private double count = 0;
 
-	BulletManagerHT( EnemyHT enemy, AdvancedRobot robot ){
+	BulletManager( Enemy enemy, AdvancedRobot robot ){
         this.enemy = enemy;
 		this.robot = robot;
 
@@ -36,7 +32,7 @@ class BulletManagerHT
 	    computeNum = 0;
 	    lastComputeTime = 0;
 
-		bullets = new ArrayList();
+		bullets = new ArrayList<Bullet>();
 	}
 
     //-------------------------------------------------------------------------------
@@ -49,10 +45,10 @@ class BulletManagerHT
 	}
 
     private void updateCount(){
-		BulletHT bullet;
+		Bullet bullet;
         //final double R = Math.max( battleFieldWidth, battleFieldHeight );
 		for( int i=0; i< bullets.size(); i++ ){
-		        bullet = (BulletHT) bullets.get(i);
+		        bullet = (Bullet) bullets.get(i);
 			    if( bullet.hitTime <= enemy.getTime() ){
 					double distance = Util.computeLineDistance(
 						 bullet.hitX, bullet.hitY, enemy.getX(), enemy.getY() );
@@ -65,7 +61,7 @@ class BulletManagerHT
 
     private void addBullet( ){
 		int position = getFitPosition( );
-		BulletHT  bullet = getHitBullet( position, 3 );
+		Bullet  bullet = getHitBullet( position, 3 );
 		if( bullet != null ) bullets.add( bullet );
 	}
 
@@ -88,7 +84,7 @@ class BulletManagerHT
 	//--------------------------------------------------------------------
     private double getFireHeadingOnPath( double power ){
 		int position = getFitPosition( );
-		BulletHT bullet = getHitBullet( position, power );
+		Bullet bullet = getHitBullet( position, power );
 		if( bullet == null ) return -1;
         bullets.add( bullet );
 		return bullet.heading;
@@ -167,7 +163,7 @@ class BulletManagerHT
 	}
 
     //----------------------------------------------------------------------------------
-    private BulletHT getHitBullet( int position, double power ){
+    private Bullet getHitBullet( int position, double power ){
 		 int size = enemy.getPathSize();
 		 if( position < 1 || position >= size ){
 			if( COMPUTE_ERROR_DEBUG ) robot.out.println("position error.");
@@ -232,13 +228,13 @@ class BulletManagerHT
             if( nextX > battleFieldWidth || nextY > battleFieldHeight
 				|| nextX< 0|| nextY< 0 ) heading =Util.modifyHeading( heading +180);
 	   }
-	   BulletHT bullet = newBullet( nextX, nextY, power );
+	   Bullet bullet = newBullet( nextX, nextY, power );
 	   //bullets.add(bullet);
 	   return bullet.heading;
 	}
 
-	private BulletHT newBullet(double hitX, double hitY, double power ){
-        BulletHT bullet = new BulletHT();
+	private Bullet newBullet(double hitX, double hitY, double power ){
+        Bullet bullet = new Bullet();
 		bullet.fireTime = (double)robot.getTime();
 		bullet.fireX = robot.getX();
 		bullet.fireY = robot.getY();

@@ -1,4 +1,4 @@
-package vn.edu.hcmut.ai.tmp_1.minixHT;
+package vn.edu.hcmut.ai.tmp_1.minix;
 import java.awt.Color;
 
 import robocode.AdvancedRobot;
@@ -12,57 +12,49 @@ import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 import robocode.SkippedTurnEvent;
 import vn.edu.hcmut.ai.tmp_1.Operator;
-import vn.edu.hcmut.ai.tmp_1.minixHT.gunHT.GunHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.gunHT.MultiGunHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.gunHT.UniGunHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.radarHT.MultiRadarHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.radarHT.RadarHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.radarHT.UniRadarHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.vehicleHT.MultiVehicleHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.vehicleHT.UniVehicleHT;
-import vn.edu.hcmut.ai.tmp_1.minixHT.vehicleHT.VehicleHT;
 
 /**
- * class MinixHT, a operator instance , by xieming for HT
- * main thread control the gun turn and fire ,
- * radar and vehicle are controled by envent handle
+ * Class Minix, a operator instance,
+ * main thread control the gun and  fire.
+ * radar and vehicle move are controlled by event handler.
  */
-
-public class MinixHT extends Operator
+public class Minix extends Operator
 {
 	// for debug
 	private int skippedTurn = 0;
     private final boolean FINISH_DEBUG = true;
 
-    private EnemyManagerHT enemyManager;
-    private RadarHT radar;
-	private VehicleHT vehicle;
-    private GunHT gun;
+    private EnemyManager enemyManager;
+    private Radar radar;
+	private Vehicle vehicle;
+    private Gun gun;
 	private final int VEHICLE_MONITOR_PERIODS = 1;
 
-	public MinixHT( AdvancedRobot robot ){
+	public Minix( AdvancedRobot robot ){
 	   super( robot );
-	   setName("MinixHT");
+	   setName("Minix");
        robot.setColors(null,null,null);
 	   init( );
     }
-    // -------------------- function for init ------------------
+
+	/**
+	 * Initialize all part of the tank.
+	 */
 	private void init( ) {  // choose stratagem
-	   enemyManager = new EnemyManagerHT( this, robot );
+	   enemyManager = new EnemyManager( this, robot );
 	   initRadar( );
 	   initVehicle( );
 	   initGun( );
-			robot.setRadarColor(Color.WHITE);
+
     } // init
 
     private void initRadar( ){
-		if( robot.getOthers() > 1 ) radar = new MultiRadarHT( this, robot );
-		else radar = new UniRadarHT( this, robot );
+		radar = new Radar( this, robot );
+		robot.setScanColor(Color.WHITE);
     }
 
     private void initVehicle( ){
-	    if( robot.getOthers() > 1 ) vehicle = new MultiVehicleHT( this, robot );
-		else vehicle = new UniVehicleHT( this, robot );
+	   	vehicle = new Vehicle( this, robot );
 
 	    robot.addCustomEvent(  // for vehicle monitor
 			 new Condition("vehicleMonitor") {
@@ -73,18 +65,21 @@ public class MinixHT extends Operator
 	}
 
 	private void initGun(){
-        if( robot.getOthers() > 1 ) gun = new MultiGunHT( this, robot );
-		else gun = new UniGunHT( this, robot );
+       gun = new Gun( this, robot );
 	}
 
-    // --------------------- main thread --------------------
+    /**
+     * Main method for operator execute.
+     */
     public void work( ){
 		/* main thread control the gun turn and fire
 		*/
 		while( true ){ gun.work(); }
 	} // work
 
-	//--------------------event handle for radar----------------------
+	/**
+	 * Event handle for radar.
+	 */
 	public void onScannedRobot( ScannedRobotEvent event ){
 		super.onScannedRobot( event ); // call pathManager
         enemyManager.onScannedRobot( event ); // call enemyManager
@@ -147,9 +142,9 @@ public class MinixHT extends Operator
 	public void onRobotDeath( RobotDeathEvent event ){
 	     enemyManager.onRobotDeath( event );
 		 if( robot.getOthers() == 1 ){ // switch to uni mode
-			 gun = new UniGunHT( this, robot );
-			 radar = new UniRadarHT( this, robot );
-			 vehicle = new UniVehicleHT( this, robot );
+			 gun = new Gun( this, robot );
+			 radar = new Radar( this, robot );
+			 vehicle = new Vehicle( this, robot );
 		 }
 	}
 
@@ -172,21 +167,21 @@ public class MinixHT extends Operator
     }
 
     //------------------ tool function --------------------
-    public EnemyHT getEnemy( String name ){
+    public Enemy getEnemy( String name ){
 		return enemyManager.getEnemy( name );
 	}
 
-    public EnemyHT[] getEnemies(){
+    public Enemy[] getEnemies(){
 		return enemyManager.getEnemies();
 	}
 
 	public double getCount(){
 		double count = 0;
-		EnemyHT[] enemies = enemyManager.getEnemies();
+		Enemy[] enemies = enemyManager.getEnemies();
 		if( enemies != null )
 			for( int i=0; i< enemies.length; i++ ) count -= enemies[i].getEnergy();
 		count += robot.getEnergy();
 		return count;
 	}
 
-} // class MinixHT
+} // class Minix

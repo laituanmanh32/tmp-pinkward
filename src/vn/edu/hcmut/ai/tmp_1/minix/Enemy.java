@@ -1,10 +1,9 @@
-package vn.edu.hcmut.ai.tmp_1.minixHT;
+package vn.edu.hcmut.ai.tmp_1.minix;
 
 import java.util.ArrayList;
 
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
-import vn.edu.hcmut.ai.tmp_1.minix.Util;
 import vn.edu.hcmut.ai.tmp_1.path.Path;
 import vn.edu.hcmut.ai.tmp_1.path.PathNode;
 
@@ -13,7 +12,7 @@ import vn.edu.hcmut.ai.tmp_1.path.PathNode;
  * store and update the current enemy state and bullet info.
  */
 
-public class EnemyHT
+public class Enemy
 {
     private final boolean ENEMY_FIRE_DEBUG = false;
     private final boolean HIT_BY_BULLET_DEBUG = false;
@@ -23,7 +22,7 @@ public class EnemyHT
 	private final int MAX_PATH_SIZE = 3000;
     private final int OFFSET = 46;
 
-	private MinixHT operator;
+	private Minix operator;
 	private AdvancedRobot robot;
 	private String name;
 
@@ -43,7 +42,7 @@ public class EnemyHT
 	private double battleFieldHeight;
     private double battleFieldWidth;
 
-	public EnemyHT( MinixHT operator, AdvancedRobot robot, String name ){
+	public Enemy( Minix operator, AdvancedRobot robot, String name ){
 	   this.name = name;
 	   this.robot = robot;
        this.operator = operator;
@@ -204,7 +203,7 @@ public class EnemyHT
 	   getNode().eFire = power;
 	   operator.onEnemyFire( name, power );
        //compute fire info
-	   BulletHT bullet;
+	   Bullet bullet;
 	   if( robot.getOthers() >1 ){
 	       bullet = getFireInfoOnOpoint( power );
            currentBullets.add( bullet );
@@ -223,11 +222,11 @@ public class EnemyHT
 	}
 
     //-----------------------------------------------------------------------
-	private BulletHT getFireInfoOnOpoint( double power ){
+	private Bullet getFireInfoOnOpoint( double power ){
 		return newBullet( robot.getX(), robot.getY(), power );
 	}
 
-    private BulletHT getFireInfoOnAhead( double power ){
+    private Bullet getFireInfoOnAhead( double power ){
        int totallTime = 0;
 	   double nextX = robot.getX();
 	   double nextY = robot.getY();
@@ -252,8 +251,8 @@ public class EnemyHT
 	}
 
 	//--------------------------------------------------------------------------
-	private BulletHT getFireInfoOnPath( double power ){
-		BulletHT bullet = null;
+	private Bullet getFireInfoOnPath( double power ){
+		Bullet bullet = null;
 		if( robot.getGunHeat() > 0 ){
 		    int position = getFitPosition( );
             bullet = getHitBullet( position, power );
@@ -302,7 +301,7 @@ public class EnemyHT
 		 return position;
 	}
 
-    private BulletHT getHitBullet( int position, double power ){
+    private Bullet getHitBullet( int position, double power ){
 		 int size = getPathSize();
 		 if( position < 1 || position >= size ) return null;
 
@@ -334,7 +333,7 @@ public class EnemyHT
 	}
 
     //--------------------------------------------------------------------
-	private BulletHT getFireInfoOnBullet( double power ){
+	private Bullet getFireInfoOnBullet( double power ){
 		  double min = Util.MAX_DOUBLE;
 		  PathNodeHT current = getNode();
 		  double bearing = 0;
@@ -363,8 +362,8 @@ public class EnemyHT
 	}
 
 	//-----------------------------------------------------------------------------------------
-	private BulletHT newBullet(double hitX, double hitY, double power){
-		 BulletHT bullet = new BulletHT();
+	private Bullet newBullet(double hitX, double hitY, double power){
+		 Bullet bullet = new Bullet();
 		 bullet.fireTime = getTime();
 		 bullet.fireX = getX();
 		 bullet.fireY = getY();
@@ -392,20 +391,20 @@ public class EnemyHT
 
 		 int oldSize = currentBullets.size();
 	     for( int i=0; i< currentBullets.size(); i++ )
-			 if( ((BulletHT)currentBullets.get(i)).fireTime == fireNode.time )
+			 if( ((Bullet)currentBullets.get(i)).fireTime == fireNode.time )
 			     currentBullets.remove(i--);
          if( HIT_BY_BULLET_DEBUG )
              robot.out.println("delete bullets: "+(oldSize-currentBullets.size()));
 	}
 
-	public BulletHT[] getBullets(){
-		 BulletHT bullet;
+	public Bullet[] getBullets(){
+		 Bullet bullet;
 		 double time = robot.getTime();
 		 double mx = robot.getX();
 		 double my = robot.getY();
 		 double moveDistance, mfDistance;
 		 for( int i=0; i< currentBullets.size(); i++ ){
-			bullet = (BulletHT)currentBullets.get(i);
+			bullet = (Bullet)currentBullets.get(i);
 			moveDistance = ( 20-3*bullet.power )*( time - bullet.fireTime );
             mfDistance = Util.computeLineDistance(
 				            mx, my, bullet.fireX, bullet.fireY );
@@ -414,9 +413,9 @@ public class EnemyHT
 		 }
          if( currentBullets.size() == 0 ) return null;
 
-		 BulletHT[] bullets = new BulletHT[ currentBullets.size() ];
+		 Bullet[] bullets = new Bullet[ currentBullets.size() ];
 	     for( int i=0; i< bullets.length; i++ )
-		     bullets[i] = (BulletHT)currentBullets.get(i);
+		     bullets[i] = (Bullet)currentBullets.get(i);
 	     return bullets;
 	}
 

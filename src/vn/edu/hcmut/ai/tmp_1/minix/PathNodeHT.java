@@ -1,4 +1,4 @@
-package vn.edu.hcmut.ai.tmp_1.minixHT;
+package vn.edu.hcmut.ai.tmp_1.minix;
 
 public class PathNodeHT
 {

@@ -1,6 +1,6 @@
-package vn.edu.hcmut.ai.tmp_1.minixHT;
+package vn.edu.hcmut.ai.tmp_1.minix;
 
-public class BulletHT
+public class Bullet
 {
 	public double fireTime, hitTime;
     public double fireX, fireY, hitX, hitY;
@@ -8,6 +8,6 @@ public class BulletHT
 	public double heading;
 	public double distance;
 
-	public BulletHT(){}
+	public Bullet(){}
 
 }

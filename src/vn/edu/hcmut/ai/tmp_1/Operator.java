@@ -72,7 +72,7 @@ public abstract class Operator {
 	}
 
 	// system event
-	public void onFinish() {
+	public  void onFinish() {
 	}
 
 	public void onDeath(DeathEvent e) {
