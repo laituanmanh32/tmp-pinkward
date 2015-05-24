@@ -117,6 +117,10 @@ public class WaveSurfing extends Operator {
 		}
 	}
 
+	/**
+	 * Return the closest wave from current robot position.
+	 * @return surfWave
+	 */
 	public EnemyWave getClosestSurfableWave() {
 		double closestDistance = 50000; // I juse use some very big number here
 		EnemyWave surfWave = null;
@@ -146,8 +150,12 @@ public class WaveSurfing extends Operator {
 				BINS - 1);
 	}
 
-	// Given the EnemyWave that the bullet was on, and the point where we
-	// were hit, update our stat array to reflect the danger in that area.
+	/**
+	 * Given the EnemyWave that the bullet was on, and the point where we
+	 * were hit, update our stat array to reflect the danger in that area.
+	 * @param ew
+	 * @param targetLocation
+	 */
 	public void logHit(EnemyWave ew, Point2D.Double targetLocation) {
 		int index = getFactorIndex(ew, targetLocation);
 
